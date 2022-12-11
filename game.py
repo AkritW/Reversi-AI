@@ -46,7 +46,8 @@ class Reversi:
             return "It is not your turn!"
 
         # horizontally check left to right
-        for i in range(1, 8, 1):
+        for i in range(1, x + 1, 1):
+            print(x)
             if player == Player.USER.value:
                 if self.board[y, x + i] == 0:
                     break
@@ -63,7 +64,7 @@ class Reversi:
                     pass
 
         # horizontal check right to left
-        for i in range(1, 8, 1):
+        for i in range(1, 8 - x, 1):
             if player == Player.USER.value:
                 if self.board[y, x - i] == 0:
                     break
@@ -80,7 +81,7 @@ class Reversi:
                     pass
 
         # vertical from top to bottom
-        for i in range(1, 8, 1):
+        for i in range(1, 8 - y, 1):
             if player == Player.USER.value:
                 if self.board[y + i, x] == 0:
                     break
@@ -97,7 +98,7 @@ class Reversi:
                     pass
 
         # vertical from bottom to top
-        for i in range(1, 8, 1):
+        for i in range(1, y + 1, 1):
             if player == Player.USER.value:
                 if self.board[y - i, x] == 0:
                     break
@@ -112,6 +113,17 @@ class Reversi:
                     self.board[y - i : y, x] = [-1 for _ in range(i)]
                 elif self.board[y - i, x] == 1:
                     pass
+
+        # # diagonally bottom right to upper left
+        # for i in range(1, min(y, x), 1):
+        #     if player == Player.USER.value:
+        #         if self.board[y - i, x - i] == 0:
+        #             break
+        #         elif self.board[y - i, x - i] == 1:
+        #             # self.board[y - i : y, x - i : x] = [1 for _ in range(i)]
+        #             pass
+        #         elif self.board[y - i, x] == -1:
+        #             pass
 
         # change turn after one player has place
         self.next_turn()
@@ -129,9 +141,10 @@ if __name__ == "__main__":
 
     # print(reversi.player)
     reversi.place(1, (4, 2))
-    reversi.place(0, (5, 4))
-    reversi.place(1, (3, 5))
-    reversi.place(0, (4, 1))
-    reversi.place(1, (6, 4))
+    # reversi.place(0, (5, 4))
+    # reversi.place(1, (3, 5))
+    # reversi.place(0, (4, 1))
+    # reversi.place(1, (6, 4))
     #   print(reversi.board[4:8, 2])
+    # reversi.place(0, (0, 0))
     print(reversi.board)
