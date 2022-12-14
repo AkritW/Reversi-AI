@@ -11,7 +11,8 @@ class Player(Enum):
     AI = 0
     USER = 1
 
-    #In board, user = 1 and AI = -1
+    # In board, user = 1 and AI = -1
+
 
 class Reversi:
     def __init__(self):
@@ -35,197 +36,255 @@ class Reversi:
 
     def get_valid_position(self, player):
         valid_pos = []
-        surrounding_dir = [[0,1],[0,-1],[1,0],[1,1],[1,-1],[-1,0],[-1,1],[-1,-1]]
+        surrounding_dir = [
+            [0, 1],
+            [0, -1],
+            [1, 0],
+            [1, 1],
+            [1, -1],
+            [-1, 0],
+            [-1, 1],
+            [-1, -1],
+        ]
         if player == Player.USER.value:
             for y in range(8):
                 for x in range(8):
                     if self.board[y, x] == 0:
                         for dir in surrounding_dir:
-                            if y+dir[0] > 7 or y+dir[0] < 0 or x+dir[1] < 0 or x+dir[1] > 7:
+                            if (
+                                y + dir[0] > 7
+                                or y + dir[0] < 0
+                                or x + dir[1] < 0
+                                or x + dir[1] > 7
+                            ):
                                 pass
                             else:
-                                if self.board[y+dir[0], x+dir[1]] == -1:
+                                if self.board[y + dir[0], x + dir[1]] == -1:
                                     test_board = self.board.copy()
                                     test_board[y][x] = 1
 
                                     # horizontally check left to right
                                     for i in range(1, 7 - x, 1):
-                                        
+
                                         if test_board[y, x + i] == 0:
                                             break
                                         elif test_board[y, x + i] == 1:
-                                            test_board[y, x : x + i] = [1 for _ in range(i)]
+                                            test_board[y, x : x + i] = [
+                                                1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y, x + 1] == -1:
                                             pass
-                                        
 
                                     # horizontal check right to left
                                     for i in range(1, x + 1, 1):
-                                        
+
                                         if test_board[y, x - i] == 0:
                                             break
                                         elif test_board[y, x - i] == 1:
-                                            test_board[y, x - i : x] = [1 for _ in range(i)]
+                                            test_board[y, x - i : x] = [
+                                                1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y, x - i] == -1:
                                             pass
-                                        
 
                                     # vertical from top to bottom
                                     for i in range(1, 7 - y - 1, 1):
-                                        
+
                                         if test_board[y + i, x] == 0:
                                             break
                                         elif test_board[y + i, x] == 1:
-                                            test_board[y : y + i, x] = [1 for _ in range(i)]
+                                            test_board[y : y + i, x] = [
+                                                1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y + i, x] == -1:
                                             pass
 
                                     # vertical from bottom to top
                                     for i in range(1, y + 1, 1):
-                                        
+
                                         if test_board[y - i, x] == 0:
                                             break
                                         elif test_board[y - i, x] == 1:
-                                            test_board[y - i : y, x] = [1 for _ in range(i)]
+                                            test_board[y - i : y, x] = [
+                                                1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y - i, x] == -1:
                                             pass
-                                        
 
                                     # diagonally bottom right to upper left
                                     for i in range(1, min(y, x) - 1, 1):
-                                       
+
                                         if test_board[y - i, x - i] == 0:
                                             break
                                         elif test_board[y - i, x - i] == 1:
-                                            np.fill_diagonal(test_board[y - i : y, x - i : x], 1)
+                                            np.fill_diagonal(
+                                                test_board[
+                                                    y - i : y, x - i : x
+                                                ],
+                                                1,
+                                            )
                                             break
                                         elif test_board[y - i, x - i] == -1:
                                             pass
-                                        
 
                                     # diagonally upper right to bottom left
                                     for i in range(i, min(7 - y, x), 1):
-                                        
+
                                         if test_board[y + i, x - i] == 0:
                                             break
                                         elif test_board[y + i, x - i] == 1:
                                             self.fill_reverse_diagonal(
-                                                test_board[y : y + i, x - i + 1 : x + 1], 1
+                                                test_board[
+                                                    y : y + i,
+                                                    x - i + 1 : x + 1,
+                                                ],
+                                                1,
                                             )
                                         elif test_board[y + i, x - i] == -1:
                                             pass
-                                        
 
                                     # diagonally bottom left to upper right
                                     for i in range(i, min(y, 7 - x), 1):
-                                        
+
                                         if test_board[y - i, x + i] == 0:
                                             break
                                         elif test_board[y - i, x + i] == 1:
                                             self.fill_reverse_diagonal(
-                                                test_board[y - i : y, x - 1 : x + i + 1], 1
+                                                test_board[
+                                                    y - i : y,
+                                                    x - 1 : x + i + 1,
+                                                ],
+                                                1,
                                             )
                                             break
                                         elif test_board[y - i, x + i] == -1:
                                             pass
-                                        
 
                                     # diagonally upper left to bottom right
                                     for i in range(i, min(7 - y, 7 - x), 1):
-                                       
+
                                         if test_board[y + i, x + i] == 0:
                                             break
                                         elif test_board[y + i, x + i] == 1:
-                                            np.fill_diagonal(test_board[y : y + i, x : x + i], 1)
+                                            np.fill_diagonal(
+                                                test_board[
+                                                    y : y + i, x : x + i
+                                                ],
+                                                1,
+                                            )
                                             break
                                         elif test_board[y + i, x + i] == -1:
                                             pass
-                                       
+
                                     if test_board.sum() > self.board.sum() + 1:
                                         # print([y,x])
                                         # print(test_board)
-                                        valid_pos.append([y,x])
+                                        valid_pos.append([y, x])
                                         break
-                                    else:pass
-                                else: pass
+                                    else:
+                                        pass
+                                else:
+                                    pass
         else:
             for y in range(8):
                 for x in range(8):
                     if self.board[y, x] == 0:
                         for dir in surrounding_dir:
-                            if y+dir[0] > 7 or y+dir[0] < 0 or x+dir[1] < 0 or x+dir[1] > 7:
+                            if (
+                                y + dir[0] > 7
+                                or y + dir[0] < 0
+                                or x + dir[1] < 0
+                                or x + dir[1] > 7
+                            ):
                                 pass
                             else:
-                                if self.board[y+dir[0], x+dir[1]] == 1:
+                                if self.board[y + dir[0], x + dir[1]] == 1:
                                     test_board = self.board.copy()
                                     test_board[y][x] = -1
                                     # horizontally check left to right
                                     for i in range(1, 7 - x, 1):
-                                        
+
                                         if test_board[y, x + i] == 0:
                                             break
                                         elif test_board[y, x + i] == -1:
-                                            test_board[y, x : x + i] = [-1 for _ in range(i)]
+                                            test_board[y, x : x + i] = [
+                                                -1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y, x + 1] == 1:
                                             pass
 
                                     # horizontal check right to left
                                     for i in range(1, x + 1, 1):
-                                        
+
                                         if test_board[y][x - i] == 0:
                                             break
                                         elif test_board[y, x - i] == -1:
-                                            test_board[y, x - i : x] = [-1 for _ in range(i)]
+                                            test_board[y, x - i : x] = [
+                                                -1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y, x - i] == 1:
                                             pass
 
                                     # vertical from top to bottom
                                     for i in range(1, 7 - y - 1, 1):
-                                        
+
                                         if test_board[y + i, x] == 0:
                                             break
                                         elif test_board[y + i][x] == -1:
-                                            test_board[y : y + i, x] = [-1 for _ in range(i)]
+                                            test_board[y : y + i, x] = [
+                                                -1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y + i, x] == 1:
                                             pass
 
                                     # vertical from bottom to top
                                     for i in range(1, y + 1, 1):
-                                        
+
                                         if test_board[y - i, x] == 0:
                                             break
                                         elif test_board[y - i, x] == -1:
-                                            test_board[y - i : y, x] = [-1 for _ in range(i)]
+                                            test_board[y - i : y, x] = [
+                                                -1 for _ in range(i)
+                                            ]
                                             break
                                         elif test_board[y - i, x] == 1:
                                             pass
 
                                     # diagonally bottom right to upper left
                                     for i in range(1, min(y, x) - 1, 1):
-                                        
+
                                         if test_board[y - i, x - i] == 0:
                                             break
                                         elif test_board[y - i, x - i] == -1:
-                                            np.fill_diagonal(test_board[y - i : y, x - i : x], -1)
+                                            np.fill_diagonal(
+                                                test_board[
+                                                    y - i : y, x - i : x
+                                                ],
+                                                -1,
+                                            )
                                             break
                                         elif test_board[y - i, x - i] == 1:
                                             pass
 
                                     # diagonally upper right to bottom left
                                     for i in range(i, min(7 - y, x), 1):
-                                        
+
                                         if test_board[y + i, x - i] == 0:
                                             break
                                         elif test_board[y + i, x - i] == -1:
                                             self.fill_reverse_diagonal(
-                                                test_board[y : y + i, x - i + 1 : x + 1], -1
+                                                test_board[
+                                                    y : y + i,
+                                                    x - i + 1 : x + 1,
+                                                ],
+                                                -1,
                                             )
                                             break
                                         elif test_board[y + i, x - i] == 1:
@@ -233,12 +292,16 @@ class Reversi:
 
                                     # diagonally bottom left to upper right
                                     for i in range(i, min(y, 7 - x), 1):
-                                        
+
                                         if test_board[y - i, x + i] == 0:
                                             break
                                         elif test_board[y - i, x + i] == -1:
                                             self.fill_reverse_diagonal(
-                                                test_board[y - i : y, x + 1 : x + i + 1], -1
+                                                test_board[
+                                                    y - i : y,
+                                                    x + 1 : x + i + 1,
+                                                ],
+                                                -1,
                                             )
                                             break
                                         elif test_board[y - i, x + i] == 1:
@@ -246,29 +309,36 @@ class Reversi:
 
                                     # diagonally upper left to bottom right
                                     for i in range(i, min(7 - y, 7 - x), 1):
-                                        
+
                                         if test_board[y + i, x + i] == 0:
                                             break
                                         elif test_board[y + i, x + i] == -1:
-                                            np.fill_diagonal(test_board[y : y + i, x : x + i], -1)
+                                            np.fill_diagonal(
+                                                test_board[
+                                                    y : y + i, x : x + i
+                                                ],
+                                                -1,
+                                            )
                                             break
                                         elif test_board[y + i, x + i] == 1:
                                             pass
-                                    
+
                                     if test_board.sum() < self.board.sum() - 1:
                                         # print([y,x])
-                                        valid_pos.append([y,x])
+                                        valid_pos.append([y, x])
                                         break
-                                    else:pass
-                                else: pass
-        
+                                    else:
+                                        pass
+                                else:
+                                    pass
+
         return valid_pos
-    
-    def valid_board(self,player):
+
+    def valid_board(self, player):
         valid_coords = self.get_valid_position(player)
         ValidBoard = np.array([[0 for _ in range(8)] for _ in range(8)])
         for coord in valid_coords:
-            ValidBoard[coord[0],coord[1]] = 5
+            ValidBoard[coord[0], coord[1]] = 5
         return ValidBoard
 
     def fill_reverse_diagonal(self, board, disk):
@@ -279,11 +349,11 @@ class Reversi:
             x -= 1
 
     def place(self, player, position):
-        y, x = position
-        self.board[y][x] = 1 if player == Player.USER.value else -1
-
         if player != self.player:
             return "It is not your turn!"
+
+        y, x = position
+        self.board[y][x] = 1 if player == Player.USER.value else -1
 
         # horizontally check left to right
         for i in range(1, 7 - x, 1):
@@ -456,7 +526,7 @@ if __name__ == "__main__":
     # reversi.next_turn()
     # print(reversi.player)
 
-    #print(reversi.board)
+    # print(reversi.board)
 
     print(reversi.player)
     reversi.place(1, (2, 4))
