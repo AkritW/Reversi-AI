@@ -33,3 +33,11 @@ $$
 # AI Algorithm
 
 To be written...
+
+# Running GUI
+
+Run on a separate terminal
+
+> cd web-gui/server && uvicorn main:app --reload --port 5000
+
+> cd web-gui/client && yarn serve

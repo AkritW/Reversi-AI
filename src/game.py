@@ -258,6 +258,13 @@ class Reversi:
             ValidBoard[coord[0],coord[1]] = 5
         return ValidBoard
 
+    def fill_reverse_diagonal(self, board, disk):
+        y, x = 0, len(board[0]) - 1
+        for _ in range(min(len(board), 8 - len(board[0]))):
+            board[y, x] = disk
+            y += 1
+            x -= 1
+
     def place(self, player, position):
         y, x = position
         self.board[y][x] = 1 if player == Player.USER.value else -1
@@ -266,7 +273,7 @@ class Reversi:
             return "It is not your turn!"
 
         # horizontally check left to right
-        for i in range(1, 8 - x, 1):
+        for i in range(1, 7 - x, 1):
             if player == Player.USER.value:
                 if self.board[y, x + i] == 0:
                     break
@@ -304,7 +311,7 @@ class Reversi:
                     pass
 
         # vertical from top to bottom
-        for i in range(1, 8 - y, 1):
+        for i in range(1, 7 - y - 1, 1):
             if player == Player.USER.value:
                 if self.board[y + i, x] == 0:
                     break
@@ -316,8 +323,8 @@ class Reversi:
             elif player == Player.AI.value:
                 if self.board[y + i, x] == 0:
                     break
-                elif self.board[y][x] == -1:
-                    self.board[y : y + 1, x] = [-1 for _ in range(i)]
+                elif self.board[y + i][x] == -1:
+                    self.board[y : y + i, x] = [-1 for _ in range(i)]
                     break
                 elif self.board[y + i, x] == 1:
                     pass
@@ -335,7 +342,7 @@ class Reversi:
             elif player == Player.AI.value:
                 if self.board[y - i, x] == 0:
                     break
-                elif self.board[y, x] == -1:
+                elif self.board[y - i, x] == -1:
                     self.board[y - i : y, x] = [-1 for _ in range(i)]
                     break
                 elif self.board[y - i, x] == 1:
@@ -361,34 +368,35 @@ class Reversi:
                     pass
 
         # diagonally upper right to bottom left
-        for i in range(i, min(8 - y, 8 - x), 1):
+        for i in range(i, min(7 - y, x), 1):
             if player == Player.USER.value:
-                if self.board[y + i, x + i] == 0:
+                if self.board[y + i, x - i] == 0:
                     break
-                elif self.board[y + i, x + i] == 1:
-                    np.fill_diagonal(self.board[y : y + i, x : x + 1], 1)
-                elif self.board[y + i, x + i] == -1:
+                elif self.board[y + i, x - i] == 1:
+                    self.fill_reverse_diagonal(
+                        self.board[y : y + i, x - i + 1 : x + 1], 1
+                    )
+                elif self.board[y + i, x - i] == -1:
                     pass
             elif player == Player.AI.value:
-                if self.board[y + i, x + i] == 0:
+                if self.board[y + i, x - i] == 0:
                     break
-                elif self.board[y + i, x + i] == -1:
-                    np.fill_diagonal(self.board[y : y + i, x + i : x + 1], -1)
+                elif self.board[y + i, x - i] == -1:
+                    self.fill_reverse_diagonal(
+                        self.board[y : y + i, x - i + 1 : x + 1], -1
+                    )
                     break
-                elif self.board[y + i, x + i] == 1:
+                elif self.board[y + i, x - i] == 1:
                     pass
 
         # diagonally bottom left to upper right
-        for i in range(i, min(y - 1, 8 - x), 1):
+        for i in range(i, min(y, 7 - x), 1):
             if player == Player.USER.value:
                 if self.board[y - i, x + i] == 0:
                     break
                 elif self.board[y - i, x + i] == 1:
-                    np.fill_diagonal(
-                        np.fliplr(self.board[y - i : y, x : x + i]), 1
-                    )
-                    self.board[y : y + i, x - i : x] = np.fliplr(
-                        self.board[y : y + i, x - i : x]
+                    self.fill_reverse_diagonal(
+                        self.board[y - i : y, x - 1 : x + i + 1], 1
                     )
                     break
                 elif self.board[y - i, x + i] == -1:
@@ -397,43 +405,30 @@ class Reversi:
                 if self.board[y - i, x + i] == 0:
                     break
                 elif self.board[y - i, x + i] == -1:
-                    np.fill_diagonal(
-                        np.fliplr(self.board[y - i : y, x : x + i]), -1
-                    )
-                    self.board[y - i : y, x : x + i] = np.fliplr(
-                        self.board[y - i : y, x : x + i]
+                    self.fill_reverse_diagonal(
+                        self.board[y - i : y, x + 1 : x + i + 1], -1
                     )
                     break
                 elif self.board[y - i, x + i] == 1:
                     pass
 
         # diagonally upper left to bottom right
-        for i in range(i, min(8 - y, x - 1), 1):
+        for i in range(i, min(7 - y, 7 - x), 1):
             if player == Player.USER.value:
-                if self.board[y + i, x - i] == 0:
+                if self.board[y + i, x + i] == 0:
                     break
-                elif self.board[y + i, x - i] == 1:
-                    np.fill_diagonal(
-                        np.fliplr(self.board[y : y + i, x - i : x]), 1
-                    )
-                    self.board[y : y + i, x - i : x] = np.fliplr(
-                        self.board[y : y + i, x - i : x]
-                    )
+                elif self.board[y + i, x + i] == 1:
+                    np.fill_diagonal(self.board[y : y + i, x : x + i], 1)
                     break
-                elif self.board[y - i, x + i] == -1:
+                elif self.board[y + i, x + i] == -1:
                     pass
             elif player == Player.AI.value:
-                if self.board[y - i, x + i] == 0:
+                if self.board[y + i, x + i] == 0:
                     break
-                elif self.board[y - i, x + i] == -1:
-                    np.fill_diagonal(
-                        np.fliplr(self.board[y : y + i, x - i : x]), -1
-                    )
-                    self.board[y : y + i, x - i : x] = np.fliplr(
-                        self.board[y : y + i, x - i : x]
-                    )
+                elif self.board[y + i, x + i] == -1:
+                    np.fill_diagonal(self.board[y : y + i, x : x + i], -1)
                     break
-                elif self.board[y - i, x + i] == 1:
+                elif self.board[y + i, x + i] == 1:
                     pass
 
         # change turn after one player has place
@@ -453,6 +448,21 @@ if __name__ == "__main__":
     # print(reversi.player)
     #reversi.place(1, (2, 4))
     reversi.place(0, (2, 3))
+    # print(reversi.board)
+    # reversi.place(1, (3, 5))
+    # print(reversi.board)
+    # reversi.place(0, (2, 5))
+    # print(reversi.board)
+    # reversi.place(1, (5, 3))
+    # print(reversi.board)
+    # reversi.place(0, (5, 2))
+    # print(reversi.board)
+    # reversi.place(1, (5, 1))
+    # print(reversi.board)
+    # reversi.place(0, (6, 1))
+    # print(reversi.board)
+    # reversi.place(0, (5, 2))
+    # reversi.place(0, (5, 2))
     # reversi.place(0, (5, 4))
     # reversi.place(1, (3, 5))
     # reversi.place(0, (4, 1))
