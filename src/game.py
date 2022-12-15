@@ -335,12 +335,12 @@ class Reversi:
 
         return valid_pos
 
-    def valid_board(self, player):
+    def get_valid_board(self, player):
         valid_coords = self.get_valid_position(player)
-        ValidBoard = np.array([[0 for _ in range(8)] for _ in range(8)])
+        valid_board = np.array([[0 for _ in range(8)] for _ in range(8)])
         for coord in valid_coords:
-            ValidBoard[coord[0], coord[1]] = 5
-        return ValidBoard
+            valid_board[coord[0], coord[1]] = 5
+        return valid_board
 
     def fill_reverse_diagonal(self, board, disk):
         y, x = 0, len(board[0]) - 1
@@ -550,4 +550,4 @@ if __name__ == "__main__":
 
     print(reversi.board)
 
-    print(reversi.valid_board(1))
+    print(reversi.get_valid_board(1))
