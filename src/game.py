@@ -517,12 +517,13 @@ class Reversi:
                 elif board[y + i, x + i] == 1:
                     pass
 
-        # change turn after one player has place
-        self.next_turn()
-
         return board
 
     def place_inplace(self, player, location):
+        # change turn after one player has place
+        self.next_turn()
+
+        # replace the board
         self.board = self.place(player, location)
 
 
