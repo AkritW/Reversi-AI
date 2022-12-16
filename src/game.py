@@ -520,11 +520,10 @@ class Reversi:
         return board
 
     def place_inplace(self, player, location):
-        # change turn after one player has place
-        self.next_turn()
-
         # replace the board
         self.board = self.place(player, location)
+        # change turn after one player has place
+        self.next_turn()
 
     def encode_board(self):
         # create 2 board for player pieces and AI pieces
