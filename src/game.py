@@ -526,6 +526,22 @@ class Reversi:
         # replace the board
         self.board = self.place(player, location)
 
+    def encode_board(self):
+        # create 2 board for player pieces and AI pieces
+        board1 = np.array(
+            [
+                [1 if x == 1 else 0 for x in self.board[y]]
+                for y, _ in enumerate(self.board)
+            ]
+        )
+        board2 = np.array(
+            [
+                [1 if x == -1 else 0 for x in self.board[y]]
+                for y, _ in enumerate(self.board)
+            ]
+        )
+        return board1, board2
+
 
 if __name__ == "__main__":
     # For texting purposes
@@ -537,7 +553,7 @@ if __name__ == "__main__":
 
     # print(reversi.board)
 
-    print(reversi.player)
+    # print(reversi.player)
     reversi.place_inplace(1, (2, 4))
     reversi.place_inplace(0, (4, 5))
     reversi.place_inplace(1, (5, 6))
@@ -550,5 +566,6 @@ if __name__ == "__main__":
     # reversi.place(0, (0, 0))
 
     print(reversi.board)
+    print(reversi.encode_board())
 
     print(reversi.get_valid_board(1))
