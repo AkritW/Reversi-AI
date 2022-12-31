@@ -50,5 +50,5 @@ class PlaceInformation(BaseModel):
 async def place_to_board(
     place_information: PlaceInformation,
 ) -> List[List[int]]:
-    reversi.place(place_information.player, place_information.locs)
+    reversi.place_inplace(place_information.player, place_information.locs)
     return reversi.board.tolist()
