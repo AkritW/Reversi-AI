@@ -127,13 +127,8 @@ class Reversi:
         board[y, x] = 1 if player == Player.USER.value else -1
 
         # debugging purposes
-<<<<<<< HEAD
         # print(y, x)
         # print(board)
-=======
-        print(y, x)
-        print(board)
->>>>>>> refs/remotes/origin/main
 
         # horizontally check left to right
         for i in range(1, 8 - x, 1):
@@ -142,10 +137,6 @@ class Reversi:
                     break
                 elif board[y, x + i] == 1:
                     board[y, x : x + i + 1] = [1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y, x + 1] == -1:
                     pass
@@ -154,10 +145,6 @@ class Reversi:
                     break
                 elif board[y, x + i] == -1:
                     board[y, x : x + i + 1] = [-1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y, x + 1] == 1:
                     pass
@@ -169,10 +156,6 @@ class Reversi:
                     break
                 elif board[y, x - i] == 1:
                     board[y, x - i : x + 1] = [1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y, x - i] == -1:
                     pass
@@ -181,10 +164,6 @@ class Reversi:
                     break
                 elif board[y, x - i] == -1:
                     board[y, x - i : x + 1] = [-1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y, x - i] == 1:
                     pass
@@ -196,10 +175,6 @@ class Reversi:
                     break
                 elif board[y + i, x] == 1:
                     board[y : y + i + 1, x] = [1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y + i, x] == -1:
                     pass
@@ -208,10 +183,6 @@ class Reversi:
                     break
                 elif board[y + i][x] == -1:
                     board[y : y + i + 1, x] = [-1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y + i, x] == 1:
                     pass
@@ -223,10 +194,6 @@ class Reversi:
                     break
                 elif board[y - i, x] == 1:
                     board[y - i : y + 1, x] = [1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y - i, x] == -1:
                     pass
@@ -235,10 +202,6 @@ class Reversi:
                     break
                 elif board[y - i, x] == -1:
                     board[y - i : y + 1, x] = [-1 for _ in range(i + 1)]
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y - i, x] == 1:
                     pass
@@ -250,10 +213,6 @@ class Reversi:
                     break
                 elif board[y - i, x - i] == 1:
                     np.fill_diagonal(board[y - i : y + 1, x - i : x + 1], 1)
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y - i, x - i] == -1:
                     pass
@@ -262,10 +221,6 @@ class Reversi:
                     break
                 elif board[y - i, x - i] == -1:
                     np.fill_diagonal(board[y - i : y + 1, x - i : x + 1], -1)
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y - i, x - i] == 1:
                     pass
@@ -326,10 +281,6 @@ class Reversi:
                     break
                 elif board[y + i, x + i] == 1:
                     np.fill_diagonal(board[y : y + i + 1, x : x + i + 1], 1)
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y + i, x + i] == -1:
                     pass
@@ -338,10 +289,6 @@ class Reversi:
                     break
                 elif self.board[y + i, x + i] == -1:
                     np.fill_diagonal(board[y : y + i + 1, x : x + i + 1], -1)
-<<<<<<< HEAD
-                    disk_flipped += i - 1
-=======
->>>>>>> refs/remotes/origin/main
                     break
                 elif board[y + i, x + i] == 1:
                     pass
