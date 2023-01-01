@@ -21,14 +21,14 @@
     <div
       style="
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         width: auto;
         align-items: center;
         justify-content: center;
       "
     >
       <div
-        style="display: flex; flex-direction: column; width: auto"
+        style="display: flex; flex-direction: row; width: auto"
         v-for="(row, i) in board"
         :key="i"
       >
@@ -79,6 +79,7 @@ export default {
       this.board = isProxy(data) ? toRaw(data) : data
     },
     async place(y, x) {
+      console.log("placing at", y, x)
       const res = await fetch("http://localhost:5000/place", {
         method: "POST",
         headers: {
