@@ -29,9 +29,9 @@ class Reversi:
         # assign the first player to be user
         self.player = Player.USER.value
 
-        # track the number of disk flipped for each player
-        self.player_disk_flipped = 0
-        self.ai_disk_flipped = 0
+        # track the number of disk for each player
+        self.player_disk_count = 2
+        self.ai_disk_count = 2
 
     def next_turn(self):
         self.player ^= 1
@@ -47,53 +47,53 @@ class Reversi:
                     if (
                         x != 7
                         and self.board[y, x + 1] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         x != 0
                         and self.board[y, x - 1] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         y != 7
                         and self.board[y + 1, x] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         y != 0
                         and self.board[y - 1, x] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         y != 7
                         and x != 7
                         and self.board[y + 1, x + 1] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         y != 0
                         and x != 7
                         and self.board[y - 1, x + 1] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         y != 7
                         and x != 0
                         and self.board[y + 1, x - 1] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
                     elif (
                         y != 0
                         and x != 0
                         and self.board[y - 1, x - 1] != 0
-                        and self.place(self.player, (y, x))[1] != 0
+                        and self.place(self.player, (y, x))[1] != 1
                     ):
                         valid_pos.append((y, x))
 
@@ -118,10 +118,13 @@ class Reversi:
 
     def place(self, player, position):
         board = deepcopy(self.board)
-        disk_flipped = 0
+        disk_flipped = 1
 
         if player != self.player:
-            return "It is not your turn!"
+            raise ValueError("It is not your turn!")
+
+        if position[0] < 0 or position[1] < 0:
+            raise ValueError("Position index can't be negative")
 
         y, x = position
         board[y, x] = 1 if player == Player.USER.value else -1
@@ -137,6 +140,7 @@ class Reversi:
                     break
                 elif board[y, x + i] == 1:
                     board[y, x : x + i + 1] = [1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y, x + 1] == -1:
                     pass
@@ -145,6 +149,7 @@ class Reversi:
                     break
                 elif board[y, x + i] == -1:
                     board[y, x : x + i + 1] = [-1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y, x + 1] == 1:
                     pass
@@ -156,6 +161,7 @@ class Reversi:
                     break
                 elif board[y, x - i] == 1:
                     board[y, x - i : x + 1] = [1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y, x - i] == -1:
                     pass
@@ -164,6 +170,7 @@ class Reversi:
                     break
                 elif board[y, x - i] == -1:
                     board[y, x - i : x + 1] = [-1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y, x - i] == 1:
                     pass
@@ -175,6 +182,7 @@ class Reversi:
                     break
                 elif board[y + i, x] == 1:
                     board[y : y + i + 1, x] = [1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y + i, x] == -1:
                     pass
@@ -183,6 +191,7 @@ class Reversi:
                     break
                 elif board[y + i][x] == -1:
                     board[y : y + i + 1, x] = [-1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y + i, x] == 1:
                     pass
@@ -194,6 +203,7 @@ class Reversi:
                     break
                 elif board[y - i, x] == 1:
                     board[y - i : y + 1, x] = [1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y - i, x] == -1:
                     pass
@@ -202,6 +212,7 @@ class Reversi:
                     break
                 elif board[y - i, x] == -1:
                     board[y - i : y + 1, x] = [-1 for _ in range(i + 1)]
+                    disk_flipped += i - 1
                     break
                 elif board[y - i, x] == 1:
                     pass
@@ -213,6 +224,7 @@ class Reversi:
                     break
                 elif board[y - i, x - i] == 1:
                     np.fill_diagonal(board[y - i : y + 1, x - i : x + 1], 1)
+                    disk_flipped += i - 1
                     break
                 elif board[y - i, x - i] == -1:
                     pass
@@ -221,6 +233,7 @@ class Reversi:
                     break
                 elif board[y - i, x - i] == -1:
                     np.fill_diagonal(board[y - i : y + 1, x - i : x + 1], -1)
+                    disk_flipped += i - 1
                     break
                 elif board[y - i, x - i] == 1:
                     pass
@@ -298,6 +311,15 @@ class Reversi:
     def place_inplace(self, player, location):
         # replace the board
         self.board, disk_flipped = self.place(player, location)
+
+        # update disk_count
+        if player == Player.AI:
+            self.ai_disk_count += disk_flipped
+            self.player_disk_count -= disk_flipped - 1
+        elif player == Player.USER:
+            self.player_disk_count += disk_flipped
+            self.ai_disk_flipped -= disk_flipped - 1
+
         # change turn after one player has place
         self.next_turn()
 
@@ -320,29 +342,62 @@ class Reversi:
 
         return np.concatenate((board1, board2), axis=0).reshape(-1)
 
-    def place_ai(self, action):
+    def reset(self):
+        print("\n\nreset")
+        self.__init__()
+        print("new board\n", self.board)
+        print("\n\n")
 
+    def place_ai(self, action):
         # get location of action
         place_location = (action // 8, action % 8)
-        self.place_inplace(self.player, place_location)
+
+        # check for illegal move
+        if self.get_valid_board()[place_location] == 0:
+            state = self.encode_board
+            reward = -1000
+            done = 1
+            return state, reward, done
+
+        disk_flipped = self.place_inplace(self.player, place_location)
 
         # count reward
-        reward = 0
-        reward += 0 if self.get_valid_board()[0] != 0 else -1000
-        if self.player == Player.USER:
-            reward += self.player_disk_flipped
-            reward -= self.ai_disk_flipped
-        elif self.player == Player.AI:
-            reward += self.ai_disk_flipped
-            reward -= self.player_disk_flipped
+        # newly flipped disk
+        reward = disk_flipped - 1  # * 10
 
-        # state of board
+        # # all flipped disk
+        # if self.player == Player.USER:
+        #     reward += self.player_disk_count
+        #     reward -= self.ai_disk_count
+        # elif self.player == Player.AI:
+        #     reward += self.ai_disk_count
+        #     reward -= self.player_disk_count
+
+        # win
+        if self.game_is_ended():
+            reward += 1000
+            self.reset()
+
+        # state of board after place
         state = self.encode_board()
 
         # done
         done = 1
 
         return state, reward, done
+
+    def game_is_ended(self):
+        # one player can't place
+        if len(self.get_valid_position(self.player)) == 0:
+            return True
+
+        # empty board
+        for row in self.board:
+            for e in row:
+                if e == 0:
+                    return False
+
+        return True
 
 
 if __name__ == "__main__":
@@ -368,5 +423,4 @@ if __name__ == "__main__":
     # reversi.place(0, (0, 0))
 
     print(reversi.board)
-    print(reversi.encode_board())
     print(reversi.get_valid_board())
