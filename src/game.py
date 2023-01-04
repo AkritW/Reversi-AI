@@ -325,7 +325,18 @@ class Reversi:
 
         return disk_flipped
 
-    def encode_board(self):
+    def encode_board1(self):
+        # create a board with some mappings
+        board1 = np.array(
+            [
+                [0.5 if x == -1 else x for x in self.board[y]]
+                for y, _ in enumerate(self.board)
+            ]
+        )
+
+        return board1.reshape(-1)
+
+    def encode_board2(self):
         # create 2 board for player pieces and AI pieces
         board1 = np.array(
             [
@@ -342,11 +353,29 @@ class Reversi:
 
         return np.concatenate((board1, board2), axis=0).reshape(-1)
 
+    def encode_board3(self):
+        # create 3 board for player pieces, AI pieces, and valid board
+        board1 = np.array(
+            [
+                [1 if x == 1 else 0 for x in self.board[y]]
+                for y, _ in enumerate(self.board)
+            ]
+        )
+        board2 = np.array(
+            [
+                [1 if x == -1 else 0 for x in self.board[y]]
+                for y, _ in enumerate(self.board)
+            ]
+        )
+        board3 = self.get_valid_board()
+
+        return np.concatenate((board1, board2, board3), axis=0).reshape(-1)
+
     def reset(self):
-        print("\n\nreset")
+        # print("\n\nreset")
         self.__init__()
-        print("new board\n", self.board)
-        print("\n\n")
+        # print("new board\n", self.board)
+        # print("\n\n")
 
     def place_ai(self, action):
         # get location of action
@@ -354,9 +383,9 @@ class Reversi:
 
         # check for illegal move
         if self.get_valid_board()[place_location] == 0:
-            state = self.encode_board
+            state = self.encode_board2()
             reward = -1000
-            done = 1
+            done = True
             return state, reward, done
 
         disk_flipped = self.place_inplace(self.player, place_location)
@@ -379,10 +408,10 @@ class Reversi:
             self.reset()
 
         # state of board after place
-        state = self.encode_board()
+        state = self.encode_board1()
 
         # done
-        done = 1
+        done = self.game_is_ended()
 
         return state, reward, done
 
