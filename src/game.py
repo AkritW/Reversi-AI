@@ -371,6 +371,19 @@ class Reversi:
 
         return np.concatenate((board1, board2, board3), axis=0).reshape(-1)
 
+    def game_is_ended(self):
+        # one player can't place
+        if len(self.get_valid_position(self.player)) == 0:
+            return True
+
+        # empty board
+        for row in self.board:
+            for e in row:
+                if e == 0:
+                    return False
+
+        return True
+
     def reset(self):
         self.__init__()
 
