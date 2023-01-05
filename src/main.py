@@ -1,3 +1,0 @@
-"""
-Code to handle execution
-"""
