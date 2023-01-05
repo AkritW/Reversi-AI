@@ -372,61 +372,7 @@ class Reversi:
         return np.concatenate((board1, board2, board3), axis=0).reshape(-1)
 
     def reset(self):
-        # print("\n\nreset")
         self.__init__()
-        # print("new board\n", self.board)
-        # print("\n\n")
-
-    def place_ai(self, action):
-        # get location of action
-        place_location = (action // 8, action % 8)
-
-        # check for illegal move
-        if self.get_valid_board()[place_location] == 0:
-            state = self.encode_board2()
-            reward = -1000
-            done = True
-            return state, reward, done
-
-        disk_flipped = self.place_inplace(self.player, place_location)
-
-        # count reward
-        # newly flipped disk
-        reward = disk_flipped - 1  # * 10
-
-        # # all flipped disk
-        # if self.player == Player.USER:
-        #     reward += self.player_disk_count
-        #     reward -= self.ai_disk_count
-        # elif self.player == Player.AI:
-        #     reward += self.ai_disk_count
-        #     reward -= self.player_disk_count
-
-        # win
-        if self.game_is_ended():
-            reward += 1000
-            self.reset()
-
-        # state of board after place
-        state = self.encode_board1()
-
-        # done
-        done = self.game_is_ended()
-
-        return state, reward, done
-
-    def game_is_ended(self):
-        # one player can't place
-        if len(self.get_valid_position(self.player)) == 0:
-            return True
-
-        # empty board
-        for row in self.board:
-            for e in row:
-                if e == 0:
-                    return False
-
-        return True
 
 
 if __name__ == "__main__":
