@@ -35,19 +35,30 @@ async def index() -> HelloWorldMessage:
     return {"message": "Hello World"}
 
 
-@app.get("/board")
-async def get_board() -> List[List[int]]:
-    board = np.array([[e for e in row] for row in reversi.board])
-    print(board)
-    valid_board = reversi.get_valid_board()
-    print(valid_board)
-    for i, _ in enumerate(board):
-        for j, _ in enumerate(board[i]):
-            if valid_board[i, j] != 0:
-                board[i, j] = 2
+class ReversiGameState(TypedDict):
+    board: List[List[int]]
+    player: int
+    blackScore: int
+    whiteScore: int
 
-    print(board)
-    return board.tolist()
+
+@app.get("/board")
+async def get_board() -> ReversiGameState:
+    board = [[int(e) for e in r] for r in reversi.board]
+    valid_board = [[int(e) for e in r] for r in reversi.get_valid_board()]
+    for y, _ in enumerate(valid_board):
+        for x, _ in enumerate(valid_board[y]):
+            if board[y][x] == -1:
+                board[y][x] = 2
+            if valid_board[y][x] == 1:
+                board[y][x] = 3
+
+    return {
+        "board": board,
+        "player": reversi.player,
+        "blackScore": reversi.ai_disk_count,
+        "whiteScore": reversi.player_disk_count,
+    }
 
 
 class Player(Enum):
@@ -60,16 +71,23 @@ class PlaceInformation(BaseModel):
     locs: List[int]
 
 
-@app.post("/place")
-async def place_to_board(
-    place_information: PlaceInformation,
-) -> List[List[int]]:
-    reversi.place_inplace(place_information.player, place_information.locs)
-    board = [[e for e in row] for row in reversi.board]
-    valid_board = reversi.get_valid_board()
-    for i, _ in enumerate(board):
-        for j, _ in enumerate(board[i]):
-            if valid_board[i, j] != 0:
-                board[i, j] = 2
-
-    return board
+# @app.post("/place")
+# async def place_to_board(
+#     place_information: PlaceInformation,
+# ) -> ReversiGameState:
+#     reversi.place_inplace(place_information.player, place_information.locs)
+#     board = [[int(e) for e in r] for r in reversi.board]
+#     valid_board = [[int(e) for e in r] for r in reversi.get_valid_board()]
+#     for y, _ in enumerate(valid_board):
+#         for x, _ in enumerate(valid_board[y]):
+#             if board[y][x] == -1:
+#                 board[y][x] = 2
+#             if valid_board[y][x] == 1:
+#                 board[y][x] = 3
+#
+#     return {
+#         "board": board,
+#         "player": reversi.player,
+#         "blackScore": reversi.ai_disk_count,
+#         "whiteScore": reversi.player_disk_count,
+#     }
