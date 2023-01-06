@@ -318,7 +318,7 @@ class Reversi:
             self.player_disk_count -= disk_flipped - 1
         elif player == Player.USER:
             self.player_disk_count += disk_flipped
-            self.ai_disk_flipped -= disk_flipped - 1
+            self.ai_disk_count -= disk_flipped - 1
 
         # change turn after one player has place
         self.next_turn()
@@ -327,12 +327,17 @@ class Reversi:
 
     def encode_board1(self):
         # create a board with some mappings
+        valid_board = self.get_valid_board()
         board1 = np.array(
             [
-                [0.5 if x == -1 else x for x in self.board[y]]
+                [0.6666 if x == -1 else x for x in self.board[y]]
                 for y, _ in enumerate(self.board)
             ]
         )
+        for y, _ in enumerate(valid_board):
+            for x, _ in enumerate(valid_board[y]):
+                if valid_board[y, x] != 0:
+                    board1[y, x] = 0.3333
 
         return board1.reshape(-1)
 
