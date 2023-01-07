@@ -15,8 +15,7 @@ plugins:
   - "@typescript-eslint"
 rules:
   indent:
-    - error
-    - 2
+    - off
   linebreak-style:
     - error
     - unix

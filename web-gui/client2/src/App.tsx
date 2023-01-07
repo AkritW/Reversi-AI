@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { QueryClient, QueryClientProvider, useQuery } from "react-query"
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+  useMutation,
+} from "react-query"
 import {
   MantineProvider,
   createStyles,
@@ -125,11 +130,31 @@ const App = () => {
 }
 
 const MainContent = () => {
-  const { isLoading, error, data } = useQuery("board", () =>
-    fetch("http://localhost:5000/board").then((res) => res.json())
+  // Styling for Mantine Components
+  const { classes } = useStyles()
+
+  // State is needed to mutate both GET and POST
+  const [data, setData] = useState()
+
+  // query board and display
+  const { isLoading } = useQuery(
+    "board",
+    () => fetch("http://localhost:5000/board").then((res) => res.json()),
+    {
+      onSuccess: (data) => setData(data),
+    }
   )
 
-  const { classes } = useStyles()
+  // post location and update board
+  const { mutate } = useMutation("board", placeDisk)
+  const place = (player, locs) => {
+    mutate(
+      { player, locs },
+      {
+        onSuccess: (data) => setData(data),
+      }
+    )
+  }
 
   return (
     <Box className="App">
@@ -137,7 +162,7 @@ const MainContent = () => {
         <Title className={classes.heading}>REVERSI</Title>
         <Box className={classes.boardWrapper}>
           <Box className={classes.board}>
-            {data &&
+            {!isLoading &&
               data.board.map((row, y) => {
                 return (
                   <Box className={classes.boardRow} key={y}>
@@ -147,8 +172,9 @@ const MainContent = () => {
                           className={classes.square}
                           size="xl"
                           key={y.toString() + x.toString()}
+                          onClick={() => place(data.player, [y, x])}
                         >
-                          <Disk val={e} player={classes.player} />
+                          <Disk val={e} player={data.player} />
                         </Button>
                       )
                     })}
@@ -168,14 +194,35 @@ interface DiskProps {
 }
 const Disk = (props: DiskProps) => {
   const { classes } = useStyles()
-  const diskMap = {
-    "0": "",
-    "1": classes.blackDisk,
-    "2": classes.whiteDisk,
-    "3": props.player ? classes.validWhite : classes.validBlack,
+  const diskMapper = (val, player) => {
+    switch (val) {
+      case 0:
+        return ""
+      case 1:
+        return classes.blackDisk
+      case 2:
+        return classes.whiteDisk
+      case 3:
+        return player ? classes.validBlack : classes.validWhite
+      default:
+        return "NA"
+    }
   }
 
-  return <Box className={diskMap[props.val]} />
+  return <Box className={diskMapper(props.val, props.player)} />
 }
 
+interface PlaceInfo {
+  player: number
+  board: Array<number>
+}
+const placeDisk = async (placeInfo: PlaceInfo) => {
+  return await fetch("http://localhost:5000/place", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify({ player: placeInfo.player, locs: placeInfo.locs }),
+  }).then((res) => res.json())
+}
 export default App
