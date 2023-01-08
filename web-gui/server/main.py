@@ -57,7 +57,7 @@ async def get_board() -> ReversiGameState:
         "board": board,
         "player": reversi.player,
         "blackScore": reversi.ai_disk_count,
-        "whiteScore": reversi.player_disk_count,
+        "whiteScore": reversi.user_disk_count,
     }
 
 
@@ -93,5 +93,5 @@ async def place_to_board(
         "board": board,
         "player": reversi.player,
         "blackScore": reversi.ai_disk_count,
-        "whiteScore": reversi.player_disk_count,
+        "whiteScore": reversi.user_disk_count,
     }
