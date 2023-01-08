@@ -11,6 +11,7 @@ import {
   Box,
   Button,
   Title,
+  Text,
 } from "@mantine/core"
 
 const queryClient = new QueryClient()
@@ -35,9 +36,9 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   boardWrapper: {
     display: "flex",
     justifyContent: "center",
+    flexDirection: "row",
   },
   board: {
-    position: "absolute",
     width: 640,
     height: 640,
     filter: "drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))",
@@ -103,6 +104,21 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     border: "7px solid #fff",
     borderRadius: 40,
   },
+  additionalInfo: {
+    display: "flex",
+    flexDirection: "column",
+    fontFamily: "Montserrat",
+    color: "#fff",
+  },
+  turn: {
+    marginBottom: 80,
+  },
+  whiteScore: {
+    marginBottom: 80,
+  },
+  blackScore: {
+    marginBottom: 80,
+  },
 }))
 
 const App = () => {
@@ -156,6 +172,11 @@ const MainContent = () => {
     )
   }
 
+  // debugging purposes
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+
   return (
     <Box className="App">
       <Box className={classes.main}>
@@ -182,6 +203,30 @@ const MainContent = () => {
                 )
               })}
           </Box>
+          <Box className={classes.additionalInfo}>
+            <Box className={classes.turn}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>Turn</Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+                {data && data.player ? "White" : "Black"}
+              </Text>
+            </Box>
+            <Box className={classes.whiteScore}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                {"Black's score"}
+              </Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+                {data && data.blackScore}
+              </Text>
+            </Box>
+            <Box className={classes.blackScore}>
+              <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                {"White's score"}
+              </Text>
+              <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+                {data && data.whiteScore}
+              </Text>
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -199,11 +244,11 @@ const Disk = (props: DiskProps) => {
       case 0:
         return ""
       case 1:
-        return classes.blackDisk
-      case 2:
         return classes.whiteDisk
+      case 2:
+        return classes.blackDisk
       case 3:
-        return player ? classes.validBlack : classes.validWhite
+        return player ? classes.validWhite : classes.validBlack
       default:
         return "NA"
     }
