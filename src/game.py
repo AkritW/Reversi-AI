@@ -30,7 +30,7 @@ class Reversi:
         self.player = Player.USER.value
 
         # track the number of disk for each player
-        self.player_disk_count = 2
+        self.user_disk_count = 2
         self.ai_disk_count = 2
 
     def next_turn(self):
@@ -248,6 +248,7 @@ class Reversi:
                         board[y : y + i + 1, x - i : x + 1], 1
                     )
                     disk_flipped += i - 1
+                    break
                 elif board[y + i, x - i] == -1:
                     pass
             elif player == Player.AI.value:
@@ -313,68 +314,17 @@ class Reversi:
         self.board, disk_flipped = self.place(player, location)
 
         # update disk_count
-        if player == Player.AI:
+        if player == Player.AI.value:
             self.ai_disk_count += disk_flipped
-            self.player_disk_count -= disk_flipped - 1
-        elif player == Player.USER:
-            self.player_disk_count += disk_flipped
+            self.user_disk_count -= disk_flipped - 1
+        elif player == Player.USER.value:
+            self.user_disk_count += disk_flipped
             self.ai_disk_count -= disk_flipped - 1
 
         # change turn after one player has place
         self.next_turn()
 
         return disk_flipped
-
-    def encode_board1(self):
-        # create a board with some mappings
-        valid_board = self.get_valid_board()
-        board1 = np.array(
-            [
-                [0.6666 if x == -1 else x for x in self.board[y]]
-                for y, _ in enumerate(self.board)
-            ]
-        )
-        for y, _ in enumerate(valid_board):
-            for x, _ in enumerate(valid_board[y]):
-                if valid_board[y, x] != 0:
-                    board1[y, x] = 0.3333
-
-        return board1.reshape(-1)
-
-    def encode_board2(self):
-        # create 2 board for player pieces and AI pieces
-        board1 = np.array(
-            [
-                [1 if x == 1 else 0 for x in self.board[y]]
-                for y, _ in enumerate(self.board)
-            ]
-        )
-        board2 = np.array(
-            [
-                [1 if x == -1 else 0 for x in self.board[y]]
-                for y, _ in enumerate(self.board)
-            ]
-        )
-
-        return np.concatenate((board1, board2), axis=0).reshape(-1)
-
-    def encode_board3(self):
-        # create 3 board for player pieces, AI pieces, and valid board
-        board1 = np.array(
-            [
-                [1 if x == 1 else 0 for x in self.board[y]]
-                for y, _ in enumerate(self.board)
-            ]
-        )
-        board2 = np.array(
-            [
-                [1 if x == -1 else 0 for x in self.board[y]]
-                for y, _ in enumerate(self.board)
-            ]
-        )
-        board3 = self.get_valid_board()
-
-        return np.concatenate((board1, board2, board3), axis=0).reshape(-1)
 
     def game_is_ended(self):
         # one player can't place
