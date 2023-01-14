@@ -33,6 +33,9 @@ class Reversi:
         self.user_disk_count = 2
         self.ai_disk_count = 2
 
+        # track the number of turn played
+        self.turn = 1
+
     def next_turn(self):
         self.player ^= 1
 
@@ -323,6 +326,9 @@ class Reversi:
 
         # change turn after one player has place
         self.next_turn()
+
+        # update the number of turn played
+        self.turn += 1
 
         return disk_flipped
 
