@@ -75,11 +75,14 @@ class PlaceInformation(TypedDict):
 async def place_to_board(
     place_information: PlaceInformation,
 ) -> ReversiGameState:
+
     reversi.place_inplace(
         place_information["player"], place_information["locs"]
     )
+
     if reversi.game_is_ended():
         reversi.reset()
+
     board = [[int(e) for e in r] for r in reversi.board]
     valid_board = [[int(e) for e in r] for r in reversi.get_valid_board()]
     for y, _ in enumerate(valid_board):
